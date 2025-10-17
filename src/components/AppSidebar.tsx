@@ -1,4 +1,4 @@
-import { BarChart3, TrendingUp, Globe, Users, Heart, Eye, Zap } from 'lucide-react';
+import { BarChart3, TrendingUp, Globe, Users, Heart, Eye } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import {
   Sidebar,
@@ -19,7 +19,6 @@ const navItems = [
   { title: 'Topics', url: '/topics', icon: Globe },
   { title: 'Competitors', url: '/competitors', icon: Users },
   { title: 'Sentiment', url: '/sentiment', icon: Heart },
-  { title: 'Demo Mode', url: '/demo', icon: Zap },
 ];
 
 export function AppSidebar() {

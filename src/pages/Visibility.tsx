@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { mockMetricData, mockPrompts } from '@/data/seedData';
 import { Badge } from '@/components/ui/badge';
+import { PromptDetailDrawer } from '@/components/PromptDetailDrawer';
+import { Prompt } from '@/types';
 
 export default function Visibility() {
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  
   const components = [
     { name: 'LLM Presence', value: 85, weight: '50%' },
     { name: 'Authority Reach', value: 78, weight: '20%' },
@@ -62,13 +67,18 @@ export default function Visibility() {
             .sort((a, b) => b.promptVisibilityScore - a.promptVisibilityScore)
             .slice(0, 5)
             .map((prompt) => (
-              <Card key={prompt.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+              <Card 
+                key={prompt.id} 
+                className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => setSelectedPrompt(prompt)}
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="font-medium">{prompt.text}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="outline">Rank #{prompt.visibilityRank}</Badge>
                       <Badge variant="secondary">{prompt.air}% AIR</Badge>
+                      <Badge variant="outline">{prompt.llmCoverage.length}/4 LLMs</Badge>
                     </div>
                   </div>
                   <div className="text-right">
@@ -82,6 +92,33 @@ export default function Visibility() {
             ))}
         </div>
       </div>
+
+      <Card className="p-6 bg-muted/30">
+        <h3 className="text-lg font-semibold mb-4">Metric Definitions</h3>
+        <div className="space-y-3 text-sm">
+          <div>
+            <strong>Visibility Score:</strong> Normalized score (0-100) measuring brand discoverability. Formula: 0.5×PromptVisibility + 0.2×AuthorityReach + 0.2×Coverage + 0.1×Freshness
+          </div>
+          <div>
+            <strong>LLM Presence (50% weight):</strong> How often your brand appears across different LLM engines, weighted by engine importance.
+          </div>
+          <div>
+            <strong>Authority Reach (20% weight):</strong> Citations from high-authority domains (DA ≥ 80). More citations from authoritative sources = higher score.
+          </div>
+          <div>
+            <strong>Prompt Coverage (20% weight):</strong> Percentage of tracked prompts where your brand appears at least once.
+          </div>
+          <div>
+            <strong>Freshness (10% weight):</strong> How recent the citing pages are. Newer citations score higher.
+          </div>
+        </div>
+      </Card>
+
+      <PromptDetailDrawer
+        prompt={selectedPrompt}
+        open={!!selectedPrompt}
+        onClose={() => setSelectedPrompt(null)}
+      />
     </div>
   );
 }

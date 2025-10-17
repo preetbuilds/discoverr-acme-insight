@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { mockPrompts, mockMetricData } from '@/data/seedData';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Medal, Award } from 'lucide-react';
+import { PromptDetailDrawer } from '@/components/PromptDetailDrawer';
+import { Prompt } from '@/types';
 
 export default function Ranking() {
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  
   const sortedPrompts = [...mockPrompts].sort((a, b) => a.visibilityRank - b.visibilityRank);
   const topOneCount = mockPrompts.filter(p => p.visibilityRank === 1).length;
   const topThreeCount = mockPrompts.filter(p => p.visibilityRank <= 3).length;
@@ -66,6 +71,7 @@ export default function Ranking() {
               className={`p-5 hover:shadow-md transition-all cursor-pointer ${
                 prompt.visibilityRank === 1 ? 'border-primary border-2' : ''
               }`}
+              onClick={() => setSelectedPrompt(prompt)}
             >
               <div className="flex items-start gap-4">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold ${
@@ -102,6 +108,27 @@ export default function Ranking() {
           ))}
         </div>
       </div>
+
+      <Card className="p-6 bg-muted/30">
+        <h3 className="text-lg font-semibold mb-4">Metric Definitions</h3>
+        <div className="space-y-3 text-sm">
+          <div>
+            <strong>Overall Ranking:</strong> Average rank position across all tracked prompts, weighted by prompt importance and engine coverage.
+          </div>
+          <div>
+            <strong>AIR (Answer Inclusion Rate):</strong> Percentage of LLM engines that include your brand in their response. Formula: (Engines Mentioning Brand / Total Engines) × 100
+          </div>
+          <div>
+            <strong>Visibility Rank:</strong> Position of your brand in each prompt's answer (1 = mentioned first/most prominently).
+          </div>
+        </div>
+      </Card>
+
+      <PromptDetailDrawer
+        prompt={selectedPrompt}
+        open={!!selectedPrompt}
+        onClose={() => setSelectedPrompt(null)}
+      />
     </div>
   );
 }
