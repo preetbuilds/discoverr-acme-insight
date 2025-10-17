@@ -1,4 +1,6 @@
-# Welcome to your Lovable project
+# Discovrr - AI Brand Visibility Dashboard
+
+A polished, investor-ready analytics dashboard that tracks and visualizes brand visibility across AI platforms (ChatGPT, Gemini, Perplexity, Claude).
 
 ## Project info
 
