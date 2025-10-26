@@ -14,7 +14,148 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      citing_domains: {
+        Row: {
+          answer_id: string
+          created_at: string
+          domain: string
+          domain_authority: number | null
+          freshness: number | null
+          id: string
+          type: string | null
+          url: string | null
+        }
+        Insert: {
+          answer_id: string
+          created_at?: string
+          domain: string
+          domain_authority?: number | null
+          freshness?: number | null
+          id?: string
+          type?: string | null
+          url?: string | null
+        }
+        Update: {
+          answer_id?: string
+          created_at?: string
+          domain?: string
+          domain_authority?: number | null
+          freshness?: number | null
+          id?: string
+          type?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citing_domains_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "prompt_answers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metrics: {
+        Row: {
+          calculated_at: string
+          delta: number | null
+          id: string
+          metadata: Json | null
+          metric_type: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          calculated_at?: string
+          delta?: number | null
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          calculated_at?: string
+          delta?: number | null
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
+      prompt_answers: {
+        Row: {
+          created_at: string
+          engine: string
+          highlighted: string | null
+          id: string
+          prompt_id: string
+          rank: number | null
+          sentiment: number | null
+          snippet: string
+        }
+        Insert: {
+          created_at?: string
+          engine: string
+          highlighted?: string | null
+          id?: string
+          prompt_id: string
+          rank?: number | null
+          sentiment?: number | null
+          snippet: string
+        }
+        Update: {
+          created_at?: string
+          engine?: string
+          highlighted?: string | null
+          id?: string
+          prompt_id?: string
+          rank?: number | null
+          sentiment?: number | null
+          snippet?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_answers_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompts: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          processed: boolean | null
+          text: string
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          processed?: boolean | null
+          text: string
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          processed?: boolean | null
+          text?: string
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
