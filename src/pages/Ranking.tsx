@@ -1,17 +1,28 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { mockPrompts, mockMetricData } from '@/data/seedData';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Medal, Award } from 'lucide-react';
+import { Trophy, Medal, Award, Loader2 } from 'lucide-react';
 import { PromptDetailDrawer } from '@/components/PromptDetailDrawer';
 import { Prompt } from '@/types';
+import { usePrompts } from '@/hooks/usePrompts';
+import { useMetrics } from '@/hooks/useMetrics';
 
 export default function Ranking() {
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  const { data: prompts, isLoading: promptsLoading } = usePrompts();
+  const { data: metrics, isLoading: metricsLoading } = useMetrics();
   
-  const sortedPrompts = [...mockPrompts].sort((a, b) => a.visibilityRank - b.visibilityRank);
-  const topOneCount = mockPrompts.filter(p => p.visibilityRank === 1).length;
-  const topThreeCount = mockPrompts.filter(p => p.visibilityRank <= 3).length;
+  if (promptsLoading || metricsLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const sortedPrompts = [...(prompts || [])].sort((a, b) => a.visibilityRank - b.visibilityRank);
+  const topOneCount = (prompts || []).filter(p => p.visibilityRank === 1).length;
+  const topThreeCount = (prompts || []).filter(p => p.visibilityRank <= 3).length;
 
   return (
     <div className="space-y-8">
@@ -30,7 +41,7 @@ export default function Ranking() {
               <Trophy className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <div className="text-3xl font-bold">#{mockMetricData.overallRanking}</div>
+              <div className="text-3xl font-bold">#{metrics?.overallRanking || 0}</div>
               <div className="text-sm text-muted-foreground">Average Rank</div>
             </div>
           </div>

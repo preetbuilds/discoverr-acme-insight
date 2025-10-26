@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { mockMetricData, mockPrompts } from '@/data/seedData';
 import { Badge } from '@/components/ui/badge';
 import { PromptDetailDrawer } from '@/components/PromptDetailDrawer';
 import { Prompt } from '@/types';
+import { usePrompts } from '@/hooks/usePrompts';
+import { useMetrics } from '@/hooks/useMetrics';
+import { Loader2 } from 'lucide-react';
 
 export default function Visibility() {
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  const { data: prompts, isLoading: promptsLoading } = usePrompts();
+  const { data: metrics, isLoading: metricsLoading } = useMetrics();
   
   const components = [
     { name: 'LLM Presence', value: 85, weight: '50%' },
@@ -15,6 +19,14 @@ export default function Visibility() {
     { name: 'Prompt Coverage', value: 92, weight: '20%' },
     { name: 'Freshness', value: 65, weight: '10%' },
   ];
+
+  if (promptsLoading || metricsLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -29,12 +41,12 @@ export default function Visibility() {
       <Card className="p-8">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-6xl font-bold text-primary">{mockMetricData.visibilityScore}</div>
+            <div className="text-6xl font-bold text-primary">{metrics?.visibilityScore || 0}</div>
             <div className="text-muted-foreground mt-2">out of 100</div>
           </div>
           <div className="text-right">
             <Badge variant="default" className="text-lg px-4 py-2">
-              +{mockMetricData.visibilityDelta} vs last period
+              +{metrics?.visibilityDelta || 0} vs last period
             </Badge>
           </div>
         </div>
@@ -63,7 +75,7 @@ export default function Visibility() {
       <div>
         <h2 className="text-2xl font-bold mb-6">Top Contributing Prompts</h2>
         <div className="space-y-3">
-          {mockPrompts
+          {(prompts || [])
             .sort((a, b) => b.promptVisibilityScore - a.promptVisibilityScore)
             .slice(0, 5)
             .map((prompt) => (
