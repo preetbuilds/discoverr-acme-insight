@@ -10,7 +10,7 @@ import Ranking from "./pages/Ranking";
 import Topics from "./pages/Topics";
 import Competitors from "./pages/Competitors";
 import Sentiment from "./pages/Sentiment";
-
+import UploadPrompts from "./pages/UploadPrompts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +29,7 @@ const App = () => (
           <Route path="/topics" element={<DashboardLayout><Topics /></DashboardLayout>} />
           <Route path="/competitors" element={<DashboardLayout><Competitors /></DashboardLayout>} />
           <Route path="/sentiment" element={<DashboardLayout><Sentiment /></DashboardLayout>} />
-          
+          <Route path="/upload" element={<UploadPrompts />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
